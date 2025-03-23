@@ -3,95 +3,686 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>开心消消乐</title>
+    <title>生产力与成长追踪系统</title>
     <style>
+        :root {
+            --primary-color: #4a6fa5;
+            --secondary-color: #5db075;
+            --accent-color: #ff7f50;
+            --light-bg: #f5f7fa;
+            --dark-text: #333;
+            --light-text: #fff;
+            --border-radius: 8px;
+            --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
-
+        
         body {
+            background-color: var(--light-bg);
+            color: var(--dark-text);
+            line-height: 1.6;
+        }
+        
+        header {
+            background-color: var(--primary-color);
+            color: var(--light-text);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: var(--box-shadow);
+        }
+        
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: var(--secondary-color);
             display: flex;
             justify-content: center;
             align-items: center;
-            min-height: 100vh;
-            background: linear-gradient(135deg, #1e90ff, #ff69b4);
-            font-family: 'Microsoft YaHei', sans-serif;
+            color: var(--light-text);
+            font-weight: bold;
         }
-
-        .game-container {
-            background: rgba(255, 255, 255, 0.9);
-            border-radius: 20px;
-            padding: 20px;
-            box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+        
+        .stats {
+            text-align: right;
         }
-
-        .game-header {
-            text-align: center;
-            margin-bottom: 20px;
+        
+        .level {
+            font-weight: bold;
         }
-
-        .game-info {
+        
+        main {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+            display: grid;
+            grid-template-columns: 1fr 2fr 1fr;
+            gap: 1.5rem;
+        }
+        
+        .card {
+            background-color: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .card-title {
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+            color: var(--primary-color);
             display: flex;
             justify-content: space-between;
-            margin-bottom: 20px;
-            font-size: 1.2em;
+            align-items: center;
         }
-
-        .score, .level, .moves {
-            background: rgba(0, 0, 0, 0.1);
-            padding: 10px 20px;
-            border-radius: 10px;
-        }
-
-        #gameCanvas {
-            border: 2px solid #333;
-            border-radius: 10px;
-            background: white;
-        }
-
-        .game-controls {
-            margin-top: 20px;
+        
+        .pomodoro {
             text-align: center;
         }
-
-        button {
-            background: #4CAF50;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 1em;
-            margin: 0 10px;
-            transition: background 0.3s;
+        
+        .timer {
+            font-size: 3rem;
+            font-weight: bold;
+            margin: 1.5rem 0;
         }
-
-        button:hover {
-            background: #45a049;
+        
+        .timer-controls {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+        }
+        
+        .btn {
+            padding: 0.5rem 1.5rem;
+            border: none;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: var(--light-text);
+        }
+        
+        .btn-secondary {
+            background-color: var(--secondary-color);
+            color: var(--light-text);
+        }
+        
+        .btn-accent {
+            background-color: var(--accent-color);
+            color: var(--light-text);
+        }
+        
+        .btn:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
+        }
+        
+        .todo-list {
+            list-style: none;
+        }
+        
+        .todo-item {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .todo-checkbox {
+            margin-right: 1rem;
+        }
+        
+        .todo-content {
+            flex-grow: 1;
+        }
+        
+        .todo-title {
+            font-weight: bold;
+        }
+        
+        .todo-details {
+            font-size: 0.85rem;
+            color: #777;
+        }
+        
+        .todo-tag {
+            padding: 0.25rem 0.5rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            margin-right: 0.5rem;
+            background-color: #eee;
+        }
+        
+        .tag-work {
+            background-color: #e6f7ff;
+            color: #1890ff;
+        }
+        
+        .tag-study {
+            background-color: #f6ffed;
+            color: #52c41a;
+        }
+        
+        .tag-life {
+            background-color: #fff7e6;
+            color: #fa8c16;
+        }
+        
+        .calendar {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .calendar th, .calendar td {
+            text-align: center;
+            padding: 0.75rem;
+            border: 1px solid #eee;
+        }
+        
+        .calendar th {
+            background-color: var(--primary-color);
+            color: var(--light-text);
+        }
+        
+        .calendar td {
+            height: 5rem;
+            vertical-align: top;
+        }
+        
+        .calendar .current {
+            background-color: rgba(74, 111, 165, 0.1);
+        }
+        
+        .calendar .active {
+            position: relative;
+        }
+        
+        .calendar .active::after {
+            content: '';
+            display: block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: var(--secondary-color);
+            position: absolute;
+            top: 8px;
+            right: 8px;
+        }
+        
+        .attributes {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+        
+        .attribute {
+            margin-bottom: 1rem;
+        }
+        
+        .attribute-name {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+        }
+        
+        .attribute-bar {
+            height: 8px;
+            background-color: #eee;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        
+        .attribute-progress {
+            height: 100%;
+            background-color: var(--secondary-color);
+        }
+        
+        .focus .attribute-progress {
+            background-color: #1890ff;
+        }
+        
+        .creativity .attribute-progress {
+            background-color: #722ed1;
+        }
+        
+        .persistence .attribute-progress {
+            background-color: #fa8c16;
+        }
+        
+        .knowledge .attribute-progress {
+            background-color: #13c2c2;
+        }
+        
+        .health .attribute-progress {
+            background-color: #52c41a;
+        }
+        
+        .achievements {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        
+        .achievement {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background-color: #eee;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.5rem;
+            color: #aaa;
+        }
+        
+        .achievement.unlocked {
+            background-color: var(--accent-color);
+            color: var(--light-text);
+        }
+        
+        .add-todo {
+            margin-top: 1rem;
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .add-todo input {
+            flex-grow: 1;
+            padding: 0.5rem;
+            border: 1px solid #ddd;
+            border-radius: var(--border-radius);
+        }
+        
+        @media (max-width: 1024px) {
+            main {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            main {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="game-container">
-        <div class="game-header">
-            <h1>开心消消乐</h1>
+    <header>
+        <div class="logo">生产力与成长系统</div>
+        <div class="user-info">
+            <div class="stats">
+                <div class="level">等级 5</div>
+                <div class="points">积分: 450 / 500</div>
+            </div>
+            <div class="avatar">U</div>
         </div>
-        <div class="game-info">
-            <div class="score">分数: <span id="score">0</span></div>
-            <div class="level">关卡: <span id="level">1</span></div>
-            <div class="moves">剩余步数: <span id="moves">30</span></div>
-        </div>
-        <canvas id="gameCanvas" width="400" height="400"></canvas>
-        <div class="game-controls">
-            <button id="restartBtn">重新开始</button>
-            <button id="helpBtn">帮助</button>
-        </div>
-    </div>
-    <script src="src/core/GameCore.js"></script>
-    <script src="src/render/RenderSystem.js"></script>
-    <script src="src/input/InputHandler.js"></script>
-    <script src="src/Game.js"></script>
+    </header>
+    
+    <main>
+        <section class="left-column">
+            <div class="card">
+                <div class="card-title">
+                    <span>个人属性</span>
+                    <small>等级 5</small>
+                </div>
+                <div class="attributes">
+                    <div class="attribute focus">
+                        <div class="attribute-name">
+                            <span>专注力</span>
+                            <span>65/100</span>
+                        </div>
+                        <div class="attribute-bar">
+                            <div class="attribute-progress" style="width: 65%"></div>
+                        </div>
+                    </div>
+                    <div class="attribute creativity">
+                        <div class="attribute-name">
+                            <span>创造力</span>
+                            <span>42/100</span>
+                        </div>
+                        <div class="attribute-bar">
+                            <div class="attribute-progress" style="width: 42%"></div>
+                        </div>
+                    </div>
+                    <div class="attribute persistence">
+                        <div class="attribute-name">
+                            <span>毅力</span>
+                            <span>78/100</span>
+                        </div>
+                        <div class="attribute-bar">
+                            <div class="attribute-progress" style="width: 78%"></div>
+                        </div>
+                    </div>
+                    <div class="attribute knowledge">
+                        <div class="attribute-name">
+                            <span>知识</span>
+                            <span>53/100</span>
+                        </div>
+                        <div class="attribute-bar">
+                            <div class="attribute-progress" style="width: 53%"></div>
+                        </div>
+                    </div>
+                    <div class="attribute health">
+                        <div class="attribute-name">
+                            <span>体能</span>
+                            <span>60/100</span>
+                        </div>
+                        <div class="attribute-bar">
+                            <div class="attribute-progress" style="width: 60%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-title">成就</div>
+                <div class="achievements">
+                    <div class="achievement unlocked">🔥</div>
+                    <div class="achievement unlocked">⏱️</div>
+                    <div class="achievement unlocked">📚</div>
+                    <div class="achievement">🏆</div>
+                    <div class="achievement">🌟</div>
+                    <div class="achievement">🚀</div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-title">7天成长</div>
+                <div class="growth-chart">
+                    <!-- 这里会放7天成长图表，暂时用文字替代 -->
+                    <p>专注力: +5%</p>
+                    <p>创造力: +2%</p>
+                    <p>毅力: +8%</p>
+                    <p>知识: +3%</p>
+                    <p>体能: +4%</p>
+                    <p>总完成任务: 23个</p>
+                    <p>总番茄钟: 34个</p>
+                </div>
+            </div>
+        </section>
+        
+        <section class="center-column">
+            <div class="card">
+                <div class="card-title">番茄钟</div>
+                <div class="pomodoro">
+                    <div class="timer">25:00</div>
+                    <div class="timer-controls">
+                        <button class="btn btn-primary">开始</button>
+                        <button class="btn btn-secondary">暂停</button>
+                        <button class="btn btn-accent">重置</button>
+                    </div>
+                    <div class="stats" style="margin-top: 1rem;">
+                        <p>今日完成: 3个番茄钟</p>
+                        <p>本周完成: 15个番茄钟</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-title">任务列表</div>
+                <ul class="todo-list">
+                    <li class="todo-item">
+                        <input type="checkbox" class="todo-checkbox">
+                        <div class="todo-content">
+                            <div class="todo-title">完成项目方案</div>
+                            <div class="todo-details">
+                                <span class="todo-tag tag-work">工作</span>
+                                <span>今天截止</span>
+                            </div>
+                        </div>
+                    </li>
+                    <li class="todo-item">
+                        <input type="checkbox" class="todo-checkbox">
+                        <div class="todo-content">
+                            <div class="todo-title">学习React基础</div>
+                            <div class="todo-details">
+                                <span class="todo-tag tag-study">学习</span>
+                                <span>明天截止</span>
+                            </div>
+                        </div>
+                    </li>
+                    <li class="todo-item">
+                        <input type="checkbox" class="todo-checkbox" checked>
+                        <div class="todo-content">
+                            <div class="todo-title" style="text-decoration: line-through;">整理房间</div>
+                            <div class="todo-details">
+                                <span class="todo-tag tag-life">生活</span>
+                                <span>已完成</span>
+                            </div>
+                        </div>
+                    </li>
+                    <li class="todo-item">
+                        <input type="checkbox" class="todo-checkbox">
+                        <div class="todo-content">
+                            <div class="todo-title">健身30分钟</div>
+                            <div class="todo-details">
+                                <span class="todo-tag tag-life">生活</span>
+                                <span>今天截止</span>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+                <div class="add-todo">
+                    <input type="text" placeholder="添加新任务...">
+                    <button class="btn btn-primary">添加</button>
+                </div>
+            </div>
+        </section>
+        
+        <section class="right-column">
+            <div class="card">
+                <div class="card-title">
+                    <span>日历</span>
+                    <span>2025年3月</span>
+                </div>
+                <table class="calendar">
+                    <thead>
+                        <tr>
+                            <th>日</th>
+                            <th>一</th>
+                            <th>二</th>
+                            <th>三</th>
+                            <th>四</th>
+                            <th>五</th>
+                            <th>六</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td>1</td>
+                        </tr>
+                        <tr>
+                            <td>2</td>
+                            <td>3</td>
+                            <td>4</td>
+                            <td>5</td>
+                            <td>6</td>
+                            <td>7</td>
+                            <td>8</td>
+                        </tr>
+                        <tr>
+                            <td>9</td>
+                            <td>10</td>
+                            <td>11</td>
+                            <td>12</td>
+                            <td>13</td>
+                            <td>14</td>
+                            <td>15</td>
+                        </tr>
+                        <tr>
+                            <td>16</td>
+                            <td>17</td>
+                            <td>18</td>
+                            <td>19</td>
+                            <td>20</td>
+                            <td>21</td>
+                            <td>22</td>
+                        </tr>
+                        <tr>
+                            <td class="current active">23</td>
+                            <td>24</td>
+                            <td>25</td>
+                            <td>26</td>
+                            <td>27</td>
+                            <td>28</td>
+                            <td>29</td>
+                        </tr>
+                        <tr>
+                            <td>30</td>
+                            <td>31</td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <div class="card">
+                <div class="card-title">统计数据</div>
+                <div class="stats-data">
+                    <p><strong>连续使用:</strong> 7天</p>
+                    <p><strong>本月完成任务:</strong> 45个</p>
+                    <p><strong>本月番茄钟:</strong> 68个</p>
+                    <p><strong>平均专注时间:</strong> 112分钟/天</p>
+                    <p><strong>任务完成率:</strong> 85%</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        // 简单的番茄钟功能实现
+        document.addEventListener('DOMContentLoaded', function() {
+            const timerDisplay = document.querySelector('.timer');
+            const startBtn = document.querySelector('.btn-primary');
+            const pauseBtn = document.querySelector('.btn-secondary');
+            const resetBtn = document.querySelector('.btn-accent');
+            
+            let timer;
+            let timeLeft = 25 * 60; // 25分钟，以秒为单位
+            let isRunning = false;
+            
+            function updateDisplay() {
+                const minutes = Math.floor(timeLeft / 60);
+                const seconds = timeLeft % 60;
+                timerDisplay.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            }
+            
+            function startTimer() {
+                if (!isRunning) {
+                    isRunning = true;
+                    timer = setInterval(function() {
+                        timeLeft--;
+                        updateDisplay();
+                        
+                        if (timeLeft <= 0) {
+                            clearInterval(timer);
+                            isRunning = false;
+                            alert('番茄钟完成！休息一下吧。');
+                        }
+                    }, 1000);
+                }
+            }
+            
+            function pauseTimer() {
+                clearInterval(timer);
+                isRunning = false;
+            }
+            
+            function resetTimer() {
+                clearInterval(timer);
+                isRunning = false;
+                timeLeft = 25 * 60;
+                updateDisplay();
+            }
+            
+            startBtn.addEventListener('click', startTimer);
+            pauseBtn.addEventListener('click', pauseTimer);
+            resetBtn.addEventListener('click', resetTimer);
+            
+            // Todo列表功能
+            const todoCheckboxes = document.querySelectorAll('.todo-checkbox');
+            todoCheckboxes.forEach(checkbox => {
+                checkbox.addEventListener('change', function() {
+                    const todoTitle = this.nextElementSibling.querySelector('.todo-title');
+                    if (this.checked) {
+                        todoTitle.style.textDecoration = 'line-through';
+                    } else {
+                        todoTitle.style.textDecoration = 'none';
+                    }
+                });
+            });
+            
+            // 添加新任务
+            const addTodoForm = document.querySelector('.add-todo');
+            const addTodoInput = addTodoForm.querySelector('input');
+            const addTodoBtn = addTodoForm.querySelector('button');
+            
+            addTodoBtn.addEventListener('click', function() {
+                const todoText = addTodoInput.value.trim();
+                if (todoText) {
+                    const todoList = document.querySelector('.todo-list');
+                    const newTodo = document.createElement('li');
+                    newTodo.className = 'todo-item';
+                    newTodo.innerHTML = `
+                        <input type="checkbox" class="todo-checkbox">
+                        <div class="todo-content">
+                            <div class="todo-title">${todoText}</div>
+                            <div class="todo-details">
+                                <span class="todo-tag tag-life">生活</span>
+                                <span>今天截止</span>
+                            </div>
+                        </div>
+                    `;
+                    todoList.appendChild(newTodo);
+                    addTodoInput.value = '';
+                    
+                    // 为新添加的复选框添加事件监听器
+                    const newCheckbox = newTodo.querySelector('.todo-checkbox');
+                    newCheckbox.addEventListener('change', function() {
+                        const todoTitle = this.nextElementSibling.querySelector('.todo-title');
+                        if (this.checked) {
+                            todoTitle.style.textDecoration = 'line-through';
+                        } else {
+                            todoTitle.style.textDecoration = 'none';
+                        }
+                    });
+                }
+            });
+        });
+    </script>
 </body>
 </html>
